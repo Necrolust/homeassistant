@@ -1,0 +1,92 @@
+homeassistant:
+  name: Home
+  latitude: !secret home_latitude
+  longitude: !secret home_longitude
+  elevation: 0
+  unit_system: metric
+  time_zone: Pacific/Auckland
+  customize: !include customize.yaml
+  auth_providers:
+   - type: homeassistant
+   - type: trusted_networks
+     trusted_networks:
+      - 10.0.10.0/24
+
+lovelace:
+  mode: yaml
+
+logger:
+  default: warn
+  logs:
+    homeassistant.components.http.ban: warning
+    homeassistant.components.http.view: warn
+    homeassistant.components.media_player: error
+    homeassistant.components.media_player.plex: warning
+    homeassistant.components.sensor: error
+    homeassistant.components.konnected: warning
+
+discovery:
+  ignore:
+    - igd
+
+tts:
+  - platform: google_translate
+    service_name: google_say
+
+frontend:
+  javascript_version: latest
+  themes: !include_dir_merge_named themes
+config:
+updater:
+logbook:
+map:
+sun:
+system_health:
+shopping_list:
+conversation:
+webhook:
+zigbee2mqtt_networkmap:
+
+http: !include http.yaml
+recorder: !include recorder.yaml  
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+mqtt: !include mqtt.yaml
+light: !include lights.yaml
+scene: !include scenes.yaml
+binary_sensor: !include binarysensors.yaml
+sensor: !include sensors.yaml
+cloud: !include cloud.yaml
+switch: !include switches.yaml
+input_select: !include input_select.yaml
+timer: !include timer.yaml
+input_boolean: !include input_boolean.yaml
+input_number: !include input_number.yaml
+influxdb: !include influxdb.yaml
+device_tracker: !include device_tracker.yaml
+panel_custom: !include panel_custom.yaml
+alarm_control_panel: !include resources/bwalarm/bwalarm.yaml
+pi_hole: !include pihole.yaml
+konnected: !include konnected.yaml
+telegram_bot: !include telegram_bot.yaml
+history: !include history.yaml
+media_player: !include media_player.yaml
+history_graph: !include graphs.yaml
+notify: !include notify.yaml
+climate: !include climate.yaml
+weather: !include weather.yaml
+unifi: !include unifi.yaml
+panel_iframe: !include paneliframes.yaml
+camera: !include camera.yaml
+nzbget: !include nzbget.yaml
+
+plex:
+  host: 10.0.10.15
+  port: 32400
+  token: ZK3syRyj-JRZaNDhZZcs
+  ssl: false
+  verify_ssl: false
+  media_player:
+    use_episode_art: true
+    show_all_controls: false

@@ -1,0 +1,1439 @@
+######################
+#                    #
+#     ALARM          #
+#                    #
+######################
+
+- alias: Nobody home movement notification
+  initial_state: 'on'
+  trigger:
+    - platform: state
+      entity_id:
+        - binary_sensor.entry_alarm
+        - binary_sensor.lounge_2_alarm
+        - binary_sensor.upstairs_alarm
+        - binary_sensor.0x00158d000277639d
+        - binary_sensor.garage_door_contact
+        - binary_sensor.neo_coolcam_unknown_type0003_id6082_sensor
+        - binary_sensor.ranchslider_contact
+      to: 'on'
+  condition:
+    condition: or
+    conditions:
+      - condition: state
+        entity_id: group.mikestefcarmen
+        state: 'not_home'
+      - condition: state
+        entity_id: alarm_control_panel.house
+        state: 'armed_away'
+  action:
+    - service: notify.telegram_notification_group
+      data_template:
+        title: "{{ trigger.to_state.attributes.friendly_name }} sensor triggered"
+        message: "Nobody is home! This *should not* be false!"  
+
+- alias: Siren has been triggered
+  initial_state: 'on'
+  trigger:
+    - platform: state
+      entity_id: switch.siren_2
+      to: 'on'
+  action:
+    - service: notify.telegram_notification_group
+      data_template:
+        title: "ALARM SIREN IS GOING OFF! FUCK!!"
+        message: "ALARM SIREN IS GOING OFF! FUCK!!"
+
+- alias: //TEST// Alarm has been triggered //TEST//
+  initial_state: 'on'
+  trigger:
+    - platform: state
+      entity_id: alarm_control_panel.house
+      to: 'triggered'
+  action:
+    - service: notify.telegram_notification_group
+      data_template:
+        message: "*TEST* Alarm has been triggered *TEST*"
+        data:
+          document:
+            url: https://i.gifer.com/1bqX.gif
+            caption: "*TEST* Alarm has been triggered *TEST*"
+
+- alias: Alarm nobody home and alarm is unset
+  initial_state: 'on'
+  trigger:
+    - platform: state
+      entity_id: group.mikestefcarmen
+      to: 'not_home'
+      for:
+        minutes: 10
+  condition:
+    - condition: state
+      entity_id: alarm_control_panel.house
+      state: 'disarmed'
+  action:
+    - service: notify.telegram_notification_group
+      data_template:
+        message: "nobody home and alarm is unset"
+        data:
+          photo:
+            url: https://i.kym-cdn.com/photos/images/newsfeed/001/331/291/f30.png
+            caption: "Nobody home and alarm is unset!"
+
+- alias: Alarm pending away warning beep
+  initial_state: 'on'
+  trigger:
+    - platform: state
+      entity_id: alarm_control_panel.house
+      from: 'disarmed'
+      to: 'pending'
+  action:
+    - service: switch.turn_on
+      entity_id: switch.warning
+
+- alias: Alarm pending to armed away stop beep
+  initial_state: 'on'
+  trigger:
+    - platform: state
+      entity_id: alarm_control_panel.house
+      from: 'pending'
+      to: 'armed_away'
+  action:
+    - service: switch.turn_off
+      entity_id: switch.warning
+    - service: notify.telegram_notification_group
+      data_template:
+        title: "Alarm"
+        message: "Alarm has been armed"
+
+- alias: Alarm armed away warning beep before trigger
+  initial_state: 'on'
+  trigger:
+    - platform: state
+      entity_id: alarm_control_panel.house
+      to: 'warning'
+  action:
+    - service: switch.turn_on
+      entity_id: switch.warning
+
+- alias: Alarm stop beep when triggered or disarmed
+  initial_state: 'on'
+  trigger:
+    - platform: state
+      entity_id: alarm_control_panel.house
+      to: 'triggered'
+    - platform: state
+      entity_id: alarm_control_panel.house
+      to: 'disarmed'
+  action:
+    - service: switch.turn_off
+      entity_id: switch.warning
+
+- alias: Alarm disarmed notification
+  initial_state: 'on'
+  trigger:
+    - platform: state
+      entity_id: alarm_control_panel.house
+      to: 'disarmed'
+  action:
+    - service: notify.telegram_notification_group
+      data_template:
+        title: "Alarm"
+        message: "Alarm has been disarmed"
+
+- alias: Turn tablet screen on when alarm triggered
+  initial_state: 'on'
+  trigger:
+    - platform: state
+      entity_id: alarm_control_panel.house
+      to: 'warning'
+  action:
+    - service: light.turn_on
+      entity_id: light.tablet_dashboard_screen
+
+######################
+#                    #
+# General automation #
+#                    #
+######################
+
+- alias: turn off all lights when nobody home for 20 minutes
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: group.mikestefcarmen
+    to: 'not_home'
+    for:
+      minutes: 20 
+  action:
+    - service: light.turn_off
+      entity_id: group.all_lights_non_rooms
+
+- alias: announce front door open
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.shenzhen_neo_electronics_co_ltd_unknown_type_0003_id_6082_sensor
+    to: 'on'
+  action:
+     - service: notify.lannouncer
+       data:
+         message: "Front door open."
+
+- alias: announce front door open curb
+  trigger:
+    platform: state
+    entity_id: binary_sensor.shenzhen_neo_electronics_co_ltd_unknown_type_0003_id_6082_sensor
+    to: 'on'
+  condition:
+    condition: and
+    conditions:
+      - condition: time
+        after: '07:00:00'
+        before: '22:00:00'
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: media_player.kitchen_home
+            state: 'off'
+          - condition: state
+            entity_id: media_player.kitchen_home
+            state: 'idle'
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: media_player.home_group
+            state: 'off'
+          - condition: state
+            entity_id: media_player.home_group
+            state: 'idle'
+          - condition: state
+            entity_id: media_player.home_group
+            state: 'unavailable'
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: media_player.downstairs_group
+            state: 'off'
+          - condition: state
+            entity_id: media_player.downstairs_group
+            state: 'idle'
+          - condition: state
+            entity_id: media_player.downstairs_group
+            state: 'unavailable'
+  action:
+    - service: media_player.volume_set
+      data_template:
+        entity_id: media_player.kitchen_home
+        volume_level: 0.4
+    - service: media_player.play_media
+      entity_id: media_player.kitchen_home
+      data:
+        media_content_id: https://hass.quake.nz/local/curb.mp3
+        media_content_type: 'music'
+
+- alias: announce laundry door open
+  initial_state: 'off'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.laundrydoorsensor_contact
+    to: 'on'
+  action:
+     - service: notify.lannouncer
+       data:
+         message: "Laundy door open."
+
+- alias: announce laundry door open seinfeld
+  trigger:
+    platform: state
+    entity_id: binary_sensor.laundrydoorsensor_contact
+    to: 'on'
+  condition:
+    - condition: or
+      conditions:
+        - condition: state
+          entity_id: media_player.kitchen_home
+          state: 'off'
+        - condition: state
+          entity_id: media_player.kitchen_home
+          state: 'idle'
+    - condition: or
+      conditions:
+        - condition: state
+          entity_id: media_player.home_group
+          state: 'off'
+        - condition: state
+          entity_id: media_player.home_group
+          state: 'idle'
+        - condition: state
+          entity_id: media_player.home_group
+          state: 'unavailable'
+    - condition: or
+      conditions:
+        - condition: state
+          entity_id: media_player.downstairs_group
+          state: 'off'
+        - condition: state
+          entity_id: media_player.downstairs_group
+          state: 'idle'
+        - condition: state
+          entity_id: media_player.downstairs_group
+          state: 'unavailable'
+  action:
+    - service: media_player.volume_set
+      data_template:
+        entity_id: media_player.kitchen_home
+        volume_level: 0.4
+    - service: media_player.play_media
+      entity_id: media_player.kitchen_home
+      data:
+        media_content_id: https://hass.quake.nz/local/seinfeld.mp3
+        media_content_type: 'music'
+
+- alias: announce garage door open
+  initial_state: 'off'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.garagedoorsensor_contact
+    to: 'on'
+  action:
+     - service: notify.lannouncer
+       data:
+         message: "Chonkys door open."
+
+- alias: announce ranchslider door open
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.ranchslidersensor_contact
+    to: 'on'
+  action:
+     - service: notify.lannouncer
+       data:
+         message: "Ranchslider door open."
+
+# Weekday wake up routine
+- alias: Weekday wake up routine
+  initial_state: 'on'
+  trigger: 
+    platform: time
+    at: "05:20:00"
+  condition:
+  - condition: time
+    weekday:
+      - mon
+      - tue
+      - wed
+      - thu
+      - fri
+  action:
+    - service: light.turn_on
+      entity_id: light.loungelamp_light
+      data:
+        brightness: 4
+        color_temp: 366
+    - delay: "00:00:01"
+    - service: light.turn_on
+      entity_id: light.loungelamp_light
+      data:
+        brightness: 150
+        color_temp: 366
+        transition: 900
+#    - service: light.turn_on
+#      entity_id: light.stairslight
+#      data:
+#        brightness: 4
+#        color_temp: 366
+#    - delay: "00:00:01"
+#    - service: light.turn_on
+#      entity_id: light.stairslight
+#      data:
+#        brightness: 90
+#        color_temp: 366
+#        transition: 900
+# Weekday leave for work routine
+- alias: Weekday leave for work routine
+  initial_state: 'on'
+  trigger:
+    platform: time
+    at: "07:20:00"
+  condition:
+  - condition: time
+    weekday:
+      - mon
+      - tue
+      - wed
+      - thu
+      - fri
+  action:
+    - service: light.turn_off
+      entity_id: light.loungelamp_light
+#    - service: light.turn_off
+#      entity_id: light.stairslight
+#####################
+#                   #
+# Stairs automation #
+#                   #
+#####################
+- alias: Stairs light on when there is motion
+  initial_state: 'on'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.aeon_labs_zw100_multisensor_6_sensor
+      to: 'on'
+  condition:
+    - condition: numeric_state
+      entity_id: sensor.aeon_labs_zw100_multisensor_6_luminance
+      below: '6'
+    - condition: state
+      entity_id: light.stairslight_light
+      state: 'off'
+    - condition: time
+      after: '06:50:00'
+      before: '21:00:00'
+  action:
+    - service: light.turn_on
+      entity_id: light.stairslight_light
+      data:
+        brightness: 255
+        color_temp: 366
+        transition: 1
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.stairs_motion
+
+- alias: Stairs light on when there is motion late
+  initial_state: 'on'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.aeon_labs_zw100_multisensor_6_sensor
+      to: 'on'
+  condition:
+    - condition: numeric_state
+      entity_id: sensor.aeon_labs_zw100_multisensor_6_luminance
+      below: '6'
+    - condition: state
+      entity_id: light.stairslight_light
+      state: 'off'
+    - condition: time
+      after: '21:00:00'
+      before: '06:50:00'
+  action:
+    - service: light.turn_on
+      entity_id: light.stairslight_light
+      data:
+        brightness: 50
+        color_temp: 366
+        transition: 1
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.stairs_motion
+
+# Turn off stairs light when there is no motion for 2 minutes
+- alias: Stairs light off when there is no motion for 2 minutes
+  initial_state: 'on'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.aeon_labs_zw100_multisensor_6_sensor
+      to: 'off'
+      for:
+        minutes: 2
+    - platform: state
+      entity_id: binary_sensor.upstairs_alarm
+      to: 'off'
+      for:
+        minutes: 2
+  condition:
+    condition: state
+    entity_id: input_boolean.stairs_motion
+    state: 'on'
+  action:
+    - service: light.turn_off
+      entity_id: light.stairslight_light
+      data:
+        transition: 1
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.stairs_motion
+#######################
+#                     #
+# Upstairs automation #
+#                     #
+#######################
+- alias: Upstairs lights on when there is motion
+  initial_state: 'on'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.aeon_labs_zw100_multisensor_6_sensor_2
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.upstairs_alarm
+      to: 'on'
+  condition:
+    - condition: state
+      entity_id: light.upstairs_lights
+      state: 'off'
+    - condition: numeric_state
+      entity_id: sensor.aeon_labs_zw100_multisensor_6_luminance_2
+      below: '6'
+    - condition: time
+      after: '06:50:00'
+      before: '21:00:00'
+  action:
+    - service: light.turn_on
+      entity_id: light.upstairs_lights
+      data:
+#        brightness: 255
+        color_temp: 366
+        transition: 1
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.upstairs_motion
+
+- alias: Upstairs lights on when there is motion when late
+  initial_state: 'on'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.aeon_labs_zw100_multisensor_6_sensor_2
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.upstairs_alarm
+      to: 'on'
+  condition:
+    - condition: state
+      entity_id: light.upstairs_lights
+      state: 'off'
+    - condition: numeric_state
+      entity_id: sensor.aeon_labs_zw100_multisensor_6_luminance_2
+      below: '6'
+    - condition: time
+      after: '21:00:00'
+      before: '06:50:00'
+  action:
+    - service: light.turn_on
+      entity_id: light.upstairs_lights
+      data:
+        transition: 1
+        brightness: 50
+        color_temp: 366
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.upstairs_motion
+
+# Turn off upstairs light when there is no motion for 2 minutes
+- alias: Upstairs lights off when there is no motion for 2 minutes
+  initial_state: 'on'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.aeon_labs_zw100_multisensor_6_sensor_2
+      to: 'off'
+      for:
+        minutes: 2
+    - platform: state
+      entity_id: binary_sensor.upstairs_alarm
+      to: 'off'
+      for:
+        minutes: 2
+  condition:
+    condition: state
+    entity_id: input_boolean.upstairs_motion
+    state: 'on'
+  action:
+    - service: light.turn_off
+      entity_id: light.upstairs_lights
+      data:
+        transition: 1
+#    - service: light.turn_off
+#      entity_id: light.stairslight_light
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.upstairs_motion
+
+######################
+#                    #
+# Lounge automation  #
+#                    #
+######################
+
+- alias: Lounge lights on when front door opened when dark
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.shenzhen_neo_electronics_co_ltd_unknown_type_0003_id_6082_sensor
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: light.loungelamp_light
+    state: 'off'
+  - condition: state
+    entity_id: group.lounge_main_lights
+    state: 'off'
+  - condition: numeric_state
+    entity_id: sensor.aeon_labs_zw100_multisensor_6_luminance
+    below: '10'
+  action:
+    - service: light.turn_on
+      entity_id: light.loungelamp
+      data:
+        brightness: 255
+        color_temp: 366
+    - service: homeassistant.turn_on
+      entity_id: group.lounge_main_lights
+      data:
+        brightness: 255
+        color_temp: 366
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.lounge_motion
+
+# Turn off lounge lights when front door is closed when dark
+- alias: Lounge lights off when front door closed when dark
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.shenzhen_neo_electronics_co_ltd_unknown_type_0003_id_6082_sensor
+    to: 'off'
+    for:
+      minutes: 2
+  condition:
+    condition: state
+    entity_id: input_boolean.lounge_motion
+    state: 'on'
+  action:
+    - service: light.turn_off
+      entity_id: light.loungelamp
+    - service: homeassistant.turn_off
+      entity_id: group.lounge_main_lights
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.lounge_motion
+
+# Turn amp on and switch to CD (chromecast audio) when homegroup starts playing
+- alias: Turn receiver on and switch to audio 1 when homegroup starts playing
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: media_player.home_group
+    to: 'playing'
+  action:
+    - service: script.turn_on
+      entity_id: script.marantz_homegroup
+
+# Turn amp on and switch to CD (chromecast audio) when downstairs group starts playing
+- alias: Turn receiver on and switch to audio 1 when downstairs starts playing
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: media_player.downstairs_group
+    to: 'playing'
+  action:
+    - service: script.turn_on
+      entity_id: script.marantz_homegroup
+
+
+- alias: brighten lights when plex paused movie
+  initial_state: 'on'
+  trigger:
+    platform: mqtt
+    topic: lounge_tv/plex/playback_pause
+  condition:
+    - condition: state
+      entity_id: group.lounge_main_lights
+      state: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: group.lounge_main_lights
+      data:
+        brightness: 255
+        color_temp: 366
+    - service: light.turn_on
+      entity_id: light.loungelamp_light
+      data:
+        brightness: 255
+        color_temp: 366
+
+- alias: brighten lights when plex stopped movie
+  initial_state: 'on'
+  trigger:
+    platform: mqtt
+    topic: lounge_tv/plex/playback_stop
+  condition:
+    - condition: state
+      entity_id: group.lounge_main_lights
+      state: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: group.lounge_main_lights
+      data:
+        brightness: 255
+        color_temp: 366
+    - service: light.turn_on
+      entity_id: light.loungelamp_light
+      data:
+        brightness: 255
+        color_temp: 366
+
+- alias: dim lights when plex start playing movie
+  initial_state: 'on'
+  trigger:
+    platform: mqtt
+    topic: lounge_tv/plex/playback_start
+  condition:
+    - condition: state
+      entity_id: group.lounge_main_lights
+      state: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: group.lounge_main_lights
+      data:
+        brightness: 100
+        color_temp: 366
+    - service: light.turn_on
+      entity_id: light.loungelamp_light
+      data:
+        brightness: 100
+        color_temp: 366
+
+- alias: dim lights when plex resume movie
+  initial_state: 'on'
+  trigger:
+    platform: mqtt
+    topic: lounge_tv/plex/playback_resume
+  condition:
+    - condition: state
+      entity_id: group.lounge_main_lights
+      state: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: group.lounge_main_lights
+      data:
+        brightness: 100
+        color_temp: 366
+    - service: light.turn_on
+      entity_id: light.loungelamp_light
+      data:
+        brightness: 100
+        color_temp: 366
+
+- alias: dim lights when plex start playing game of thrones
+  initial_state: 'on'
+  trigger:
+    platform: mqtt
+    topic: lounge_tv/got/playback_start
+  condition:
+    - condition: state
+      entity_id: group.lounge_main_lights
+      state: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: group.lounge_main_lights
+      data:
+        brightness: 100
+        color_temp: 366
+    - service: light.turn_off
+      entity_id: light.lounge_light_21
+    - service: light.turn_on
+      entity_id: light.loungelamp_light
+      data:
+        brightness: 100
+        color_temp: 366
+
+- alias: dim lights when plex resume playing game of thrones
+  initial_state: 'on'
+  trigger:
+    platform: mqtt
+    topic: lounge_tv/got/playback_resume
+  condition:
+    - condition: state
+      entity_id: group.lounge_main_lights
+      state: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: group.lounge_main_lights
+      data:
+        brightness: 100
+        color_temp: 366
+    - service: light.turn_off
+      entity_id: light.lounge_light_21
+    - service: light.turn_on
+      entity_id: light.loungelamp_light
+      data:
+        brightness: 100
+        color_temp: 366
+
+- alias: dim lights when plex start playing game of thrones
+  initial_state: 'on'
+  trigger:
+    platform: mqtt
+    topic: lounge_tv/got/playback_pause
+  condition:
+    - condition: state
+      entity_id: group.lounge_main_lights
+      state: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: group.lounge_main_lights
+      data:
+        brightness: 255
+        color_temp: 366
+    - service: light.turn_on
+      entity_id: light.loungelamp_light
+      data:
+        brightness: 255
+        color_temp: 366
+
+- alias: brighten lights when kodi paused movie
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: media_player.kodi_on_shield
+    to: 'paused'
+  condition:
+    - condition: state
+      entity_id: group.lounge_main_lights
+      state: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: group.lounge_main_lights
+      data:
+        brightness: 255
+        color_temp: 366
+
+- alias: brighten lights when kodi stopped movie
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: media_player.kodi_on_shield
+    to: 'stopped'
+  condition:
+    - condition: state
+      entity_id: group.lounge_main_lights
+      state: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: group.lounge_main_lights
+      data:
+        brightness: 255
+        color_temp: 366
+
+- alias: dim lights when kodi start playing movie
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: media_player.kodi_on_shield
+    to: 'playing'
+  condition:
+    - condition: state
+      entity_id: group.lounge_main_lights
+      state: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: group.lounge_main_lights
+      data:
+        brightness: 100
+        color_temp: 366
+
+######################
+#                    #
+# Kitchen automation #
+#                    #
+######################
+
+# Turn on kitchen lights when there is motion
+- alias: Kitchen lights on when there is motion
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.kitchen_sensor_occupancy
+    to: 'on'
+  condition:
+    - condition: state
+      entity_id: light.kitchen_lights
+      state: 'off'
+    - condition: numeric_state
+      entity_id: sensor.kitchen_sensor_illuminance
+      below: '30'
+  action:
+    - service: light.turn_on
+      entity_id: light.kitchen_lights
+      data:
+        transition: 1
+        color_temp: 366
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.kitchen_motion
+
+# Turn off kitchen lights when there is no motion for 5 minutes
+- alias: Kitchen lights when there is no motion for 5 minutes
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.kitchen_sensor_occupancy
+    to: 'off'
+    for:
+      minutes: 5
+  condition:
+    condition: state
+    entity_id: input_boolean.kitchen_motion
+    state: 'on'
+  action:
+    - service: light.turn_off
+      entity_id: light.kitchen_lights
+      data:
+        transition: 2
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.kitchen_motion
+
+#######################
+#                     #
+# Stefs dimmer switch #
+#                     #
+#######################
+ 
+- alias: stefs room dimmer switch turn on all lights dark at night
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: sensor.stefsdimmerswitch_action
+    to: 'on-press'
+  condition:
+    - condition: time
+      after: '00:00:00'
+      before: '04:00:00'
+  action:
+    service: light.turn_on
+    entity_id: group.stefs_room
+    data:
+      brightness: 10
+      color_temp: 366
+
+- alias: stefs room dimmer switch turn off all lights
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: sensor.stefsdimmerswitch_action
+    to: 'off-press'
+  action:
+    service: light.turn_off
+    entity_id: group.stefs_room
+
+- alias: stefs room dimmer switch turn on normal times
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: sensor.stefsdimmerswitch_action
+    to: 'on-press'
+  condition:
+    - condition: time
+      after: '04:00:00'
+      before: '00:00:00'
+  action:
+    service: light.turn_on
+    entity_id: group.stefs_room
+
+- alias: stefs room dimmer switch brightness up
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: sensor.stefsdimmerswitch_action
+    to: 'up-press'
+  action:
+    - service: light.turn_on
+      entity_id: light.stef_s_room_front_light
+      data_template:
+        brightness: '{{states.light.stef_s_room_front_light.attributes.brightness|int + 50}}'
+    - service: light.turn_on
+      entity_id: light.stef_s_room_rear_light
+      data_template:
+        brightness: '{{states.light.stef_s_room_rear_light.attributes.brightness|int + 50}}'
+
+- alias: stefs room dimmer switch brightness down
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: sensor.stefsdimmerswitch_action
+    to: 'down-press'
+  action:
+    - service: light.turn_on
+      entity_id: light.stef_s_room_front_light
+      data_template:
+        brightness: '{{states.light.stef_s_room_front_light.attributes.brightness|int - 50}}'
+    - service: light.turn_on
+      entity_id: light.stef_s_room_rear_light
+      data_template:
+        brightness: '{{states.light.stef_s_room_rear_light.attributes.brightness|int - 50}}'
+
+- alias: stefs room dimmer switch turn on all big brightness normal times
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: sensor.stefsdimmerswitch_action
+    to: 'up-hold'
+  action:
+    service: light.turn_on
+    entity_id: group.stefs_room
+    data:
+      brightness: 255
+      color_temp: 366
+
+
+- alias: stefs room dimmer switch turn on all lights night mode
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: sensor.stefsdimmerswitch_action
+    to: 'down-hold'
+  action:
+    service: light.turn_on
+    entity_id: group.stefs_room
+    data:
+      effect: night_mode
+
+#######################
+#                     #
+# Mikes dimmer switch #
+#                     #
+#######################
+
+- alias: mikes room dimmer switch turn off main lights.
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: sensor.mikesdimmerswitch_action
+    to: 'off-press'
+  action:
+    service: light.turn_off
+    entity_id: light.mike_and_carmen_s_room
+
+- alias: mikes room dimmer switch turn on main lights normal times
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: sensor.mikesdimmerswitch_action
+    to: 'on-press'
+  condition:
+    - condition: time
+      after: '06:45:00'
+      before: '22:00:00'
+  action:
+    service: light.turn_on
+    entity_id: light.mike_and_carmen_s_room
+    data:
+      color_temp: 366
+
+- alias: mikes room dimmer switch main lights brightness up
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: sensor.mikesdimmerswitch_action
+    to: 'up-press'
+  action:
+    - service: light.turn_on
+      entity_id: light.mike_and_carmen_s_room
+      data_template:
+        brightness: '{{states.light.mike_and_carmen_s_room.attributes.brightness|int + 50}}'
+
+- alias: mikes room dimmer switch main lights brightness down
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: sensor.mikesdimmerswitch_action
+    to: 'down-press'
+  action:
+    - service: light.turn_on
+      entity_id: light.mike_and_carmen_s_room
+      data_template:
+        brightness: '{{states.light.mike_and_carmen_s_room.attributes.brightness|int - 50}}'
+
+- alias: mikes room dimmer switch turn on main lights dimly at night
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: sensor.mikesdimmerswitch_action
+    to: 'on-press'
+  condition:
+    - condition: time
+      after: '22:00:00'
+      before: '06:45:00'
+  action:
+    service: light.turn_on
+    entity_id: light.mike_and_carmen_s_room
+    data:
+      brightness: 100
+      color_temp: 366
+
+- alias: mikes room dimmer switch turn on carmens lamp
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: sensor.mikesdimmerswitch_action
+    to: 'up-hold'
+  action:
+    service: light.turn_on
+    entity_id: light.carmen_s_bedside_lamp
+
+- alias: mikes room dimmer switch turn on mikes lamp
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: sensor.mikesdimmerswitch_action
+    to: 'down-hold'
+  action:
+    service: light.turn_on
+    entity_id: light.mike_s_bedside_lamp
+
+- alias: Kitchen Sink Animation Speed Send
+  initial_state: 'on'
+  hide_entity: false
+  trigger:
+    - entity_id: input_number.kitchensink_animation_speed
+      platform: state
+  action:
+    - service: mqtt.publish
+      data_template:
+        payload_template: '{"speed": {{ trigger.to_state.state | int }}}'
+        retain: true
+        topic: home/Kitchen-Sink-LEDStrip-ESP8266-MQTT_ha/state/in
+
+- alias: Kitchen Sink Animation Speed Receive
+  initial_state: 'on'
+  trigger:
+    - platform: mqtt
+      topic: home/Kitchen-Sink-LEDStrip-ESP8266-MQTT_ha/state/out
+  action:
+    - service: input_number.set_value
+      data_template:
+        entity_id: input_number.kitchensink_animation_speed
+        value: '{{ trigger.payload_json.speed | int }}'
+
+- alias: Stef's room dimmer
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: input_number.stef_room_brightness
+  action:
+    - service: light.turn_on
+      entity_id: group.stefs_room
+      data_template:
+        brightness: "{{ trigger.to_state.state | int }}"
+
+- alias: Lounge lights dimmer
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: input_number.lounge_brightness
+  action:
+    - service: light.turn_on
+      entity_id: group.lounge_main_lights
+      data_template:
+        brightness: "{{ trigger.to_state.state | int }}"
+
+- alias: 'Check next rubbish type'
+  initial_state: 'on'
+  trigger:
+    - platform: state
+      entity_id: input_boolean.next_rubbish_type
+      from: 'off'
+      to: 'on'
+  action:
+    - delay:
+        seconds: 2
+    - service: script.turn_on
+      entity_id: script.speak_next_rubbish_type
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.next_rubbish_type
+
+##############################
+# DOWNSTAIRS BATHROOM ########
+##############################
+##############################
+##############################
+
+
+- alias: Downstairs bathroom speaker spooky when motion
+  initial_state: 'off'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.0x00158d00029a9dd7_occupancy
+    to: 'on'
+  action:
+    - service: media_player.play_media
+      entity_id: media_player.googlehome6758
+      data:
+        media_content_id: https://hass.quake.nz/local/spooky.mp3
+        media_content_type: 'music'
+    - service: light.turn_on
+      data:
+        entity_id: light.downstairsbathroom_light
+        transition: 7
+        rgb_color: [255, 0, 200]
+        brightness_pct: 100
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.downstairs_bathroom_motion
+
+- alias: Downstairs bathroom light on when there is motion
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.0x00158d00029a9dd7_occupancy
+    to: 'on'
+  condition:
+    - condition: numeric_state
+      entity_id: sensor.0x00158d00029a9dd7_illuminance
+      below: '35'
+    - condition: state
+      entity_id: light.downstairsbathroom_light
+      state: 'off'
+  action:
+    - service: light.turn_on
+      entity_id: light.downstairsbathroom_light
+      data:
+        brightness: 255
+        transition: 2
+        color_temp: 366
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.downstairs_bathroom_motion
+
+- alias: Downstairs bathroom off when there is no motion for 30 seconds
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.0x00158d00029a9dd7_occupancy
+    to: 'off'
+    for:
+      seconds: 30
+  condition:
+    condition: state
+    entity_id: input_boolean.downstairs_bathroom_motion
+    state: 'on'
+  action:
+    - service: light.turn_off
+      entity_id: light.downstairsbathroom_light
+      data:
+        transition: 2
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.downstairs_bathroom_motion
+    - service: media_player.media_stop
+      entity_id: media_player.googlehome6758
+
+- alias: Zigbee2mqtt Log Level
+  initial_state: 'on'
+  trigger:
+    - platform: state
+      entity_id: input_select.zigbee2mqtt_log_level
+      to: debug
+    - platform: state
+      entity_id: input_select.zigbee2mqtt_log_level
+      to: warn
+    - platform: state
+      entity_id: input_select.zigbee2mqtt_log_level
+      to: error
+    - platform: state
+      entity_id: input_select.zigbee2mqtt_log_level
+      to: info
+  action:
+    - service: mqtt.publish
+      data:
+        payload_template: '{{ states(''input_select.zigbee2mqtt_log_level'') }}'
+        topic: zigbee2mqtt/bridge/config/log_level
+
+- id: enable_zigbee_join
+  alias: Enable Zigbee joining
+  hide_entity: true
+  trigger:
+    platform: state
+    entity_id: input_boolean.zigbee_permit_join
+    to: 'on'
+  action:
+  - service: mqtt.publish
+    data:
+      topic: zigbee2mqtt/bridge/config/permit_join
+      payload: 'true'
+  - service: timer.start
+    data:
+      entity_id: timer.zigbee_permit_join
+
+- id: disable_zigbee_join
+  alias: Disable Zigbee joining
+  hide_entity: true
+  trigger:
+  - entity_id: input_boolean.zigbee_permit_join
+    platform: state
+    to: 'off'
+  action:
+  - data:
+      payload: 'false'
+      topic: zigbee2mqtt/bridge/config/permit_join
+    service: mqtt.publish
+  - data:
+      entity_id: timer.zigbee_permit_join
+    service: timer.cancel
+
+- id: disable_zigbee_join_timer
+  alias: Disable Zigbee joining by timer
+  hide_entity: true
+  trigger:
+  - platform: event
+    event_type: timer.finished
+    event_data:
+      entity_id: timer.zigbee_permit_join
+  action:
+  - service: mqtt.publish
+    data:
+      topic: zigbee2mqtt/bridge/config/permit_join
+      payload: 'false'
+  - service: input_boolean.turn_off
+    data:
+      entity_id: input_boolean.zigbee_permit_join
+##############################
+# BUTTONS ####################
+##############################
+##############################
+##############################
+- alias: Xiaomi Mija button toggle kitchen sink
+  initial_state: 'on'
+  trigger:
+    platform: mqtt
+    topic: 'zigbee2mqtt/XiaomiMijaButton'
+  condition:
+    condition: template
+    value_template: '{{ "single" == trigger.payload_json.click }}'
+  action:
+    entity_id: light.wled_2
+    service: light.toggle
+
+- alias: Xiaomi Mija button toggle kitchen island
+  initial_state: 'on'
+  trigger:
+    platform: mqtt
+    topic: 'zigbee2mqtt/XiaomiMijaButton'
+  condition:
+    condition: template
+    value_template: '{{ "long" == trigger.payload_json.click }}'
+  action:
+    entity_id: light.kitchen_island
+    service: light.toggle
+
+- alias: Xiaomi cube toggle lounge lights and lounge lamp
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: sensor.0x00158d00029bcef9_action
+    to: 'shake'
+  action:
+    - entity_id: light.lounge_lights
+      service: light.toggle
+    - entity_id: light.loungelamp_light
+      service: light.toggle
+
+- alias: Xiaomi cube toggle lounge lights and lounge lamp brightness
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: sensor.0x00158d00029bcef9_action
+    to: 'flip90'
+  condition:
+    - condition: state
+      entity_id: light.lounge_lights
+      state: 'on'
+    - condition: state
+      entity_id: light.loungelamp_light
+      state: 'on'
+  action:
+    - service: light.turn_on
+      data_template:
+        entity_id: light.lounge_lights
+        brightness: >
+          {% if states.light.lounge_lights.attributes.brightness  > 240 %}
+            100
+          {% elif states.light.lounge_lights.attributes.brightness  < 150 %}
+            255
+          {% endif %}
+    - service: light.turn_on
+      data_template:
+        entity_id: light.loungelamp_light
+        brightness: >
+          {% if states.light.loungelamp_light.attributes.brightness  > 240 %}
+            100
+          {% elif states.light.loungelamp_light.attributes.brightness  < 150 %}
+            255
+          {% endif %}
+
+- alias: Telegram bot react to message test
+  trigger:
+    platform: event
+    event_type: telegram_command
+    event_data:
+      command: '/lightsoff'
+  action:
+    - service: notify.telegram_notification_group
+      data:
+        message: 'commands'
+        data:
+          keyboard:
+            - '/lightsoff'
+          
+- alias: Telegram bot turn lights off
+  trigger:
+    platform: event
+    event_type: telegram_command
+    event_data:
+      command: '/lightsoff'
+  action:
+    - service: homeassistant.turn_off
+      entity_id: group.all_lights_non_rooms
+
+#######################
+#                     #
+#                     #
+# TELEGRAM            #
+#                     #
+#######################
+- alias: "Hercules bot that reply pong to ping"
+  hide_entity: true
+  trigger:
+    platform: event
+    event_type: telegram_command
+    event_data:
+      command: '/start'
+  action:
+    - service: notify.telegram_notification_group
+      data:
+        message: 'What would you like to do? Me hamsumb.'
+        data:
+          keyboard:
+            - '/arm, /disarm'
+            - '/callmeafaggot'
+
+- alias: "Hercules calling me a faggot"
+  trigger:
+    platform: event
+    event_type: telegram_command
+    event_data:
+      command: '/callmeafaggot'
+  action:
+    - service: notify.telegram_notification_group
+      data:
+        message: 'faggot'
+
+- alias: "Hercules calling me a faggot arm"
+  trigger:
+    platform: event
+    event_type: telegram_command
+    event_data:
+      command: '/arm'
+  action:
+    - service: alarm_control_panel.alarm_trigger
+      data: {"entity_id":"alarm_control_panel.house","code":"4439"}
+
+- alias: "Hercules calling me a faggot disarm"
+  trigger:
+    platform: event
+    event_type: telegram_command
+    event_data:
+      command: '/disarm'
+  action:
+    - service: alarm_control_panel.alarm_disarm
+      data: {"entity_id":"alarm_control_panel.house","code":"4439"}
+
+- alias: "Hercules say hello"
+  trigger:
+    platform: event
+    event_type: telegram_command
+    event_data:
+      command: 'hi perky'
+  action:
+    - service: notify.telegram_notification_group
+      data:
+        message: 'faggot'

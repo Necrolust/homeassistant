@@ -1,0 +1,6 @@
+  controllers:
+    - host: 10.0.10.2
+      site: Home
+      ssid_filter:
+        - 'Necro-Unifi'
+        - 'Hotel Kensington'

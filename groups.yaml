@@ -1,0 +1,265 @@
+stairs_sensor:
+  name: "Stairs sensor"
+  entities:
+    - binary_sensor.aeotec_zw100_multisensor_6_sensor
+    - sensor.aeotec_zw100_multisensor_6_temperature
+    - sensor.aeotec_zw100_multisensor_6_luminance
+    - sensor.aeotec_zw100_multisensor_6_relative_humidity
+
+door_sensor:
+  name: "Kitchen sensor"
+  entities:
+    - binary_sensor.wenzhou_tkb_control_system_tsp01_3_in_1_pir_motion_sensor_motion_sensor
+    - sensor.wenzhou_tkb_control_system_tsp01_3_in_1_pir_motion_sensor_temperature
+    - sensor.wenzhou_tkb_control_system_tsp01_3_in_1_pir_motion_sensor_luminance
+    - sensor.wenzhou_tkb_control_system_tsp01_3_in_1_pir_motion_sensor_relative_humidity
+
+door_status_sensor:
+  name: "Front door open/closed sensor"
+  entities:
+    - binary_sensor.neo_coolcam_unknown_type0003_id6082_sensor
+
+rooms:
+  view: yes
+  name: "Rooms"
+  entities:
+    - group.mikes_room
+    - group.stefs_room
+    - group.lounge
+    - group.stairs
+    - group.upstairs
+    - group.kitchen
+#    - group.outside_weather
+
+sensors:
+  name: "Sensors"
+  entities:
+    - group.stairs_sensor
+    - group.upstairs_sensor
+    - group.door_sensor
+    - group.door_status_sensor
+    - group.sensor_status
+    - group.system_stats
+    - group.phiole
+
+all_media:
+  name: "Media"
+  entities:
+    - media_player.sony_bravia_tv
+    - media_player.yamaha_receiver
+    - media_player.lounge_speaker
+    - media_player.living_room
+    - media_player.kitchen_home
+    - media_player.bedroom_home
+    - media_player.home_group
+
+lights:
+  name: "Lights - Common"
+  entities:
+    - group.lounge_main_lights
+    - input_number.lounge_brightness
+    - light.loungelamp
+    - light.stairslight
+    - light.upstairs_lights
+    - light.kitchen_lights
+    - light.kitchen_sink_ledstrip_esp8266_mqtt
+    - input_number.kitchensink_animation_speed
+    -  light.upstairsbathroomlight
+#    - light.blueroom_lamp
+
+lights_rooms:
+  name: "Lights - Bedrooms"
+  entities:
+    - light.mike_and_carmen_s_room
+    - light.mike_s_bedside_lamp
+    - light.carmen_s_bedside_lamp
+    - light.masterbathroom_light
+    - group.stefs_room
+
+kitchen:
+  name: "Kitchen"
+  entities:
+    - light.kitchen_lights
+    - light.kitchen_sink_ledstrip_esp8266_mqtt
+    - input_number.kitchensink_animation_speed
+
+lounge:
+  name: "Lounge"
+  entities:
+    - light.loungelamp
+    - light.lounge_light_11
+    - light.lounge_light_12
+    - light.lounge_light_21
+    - light.lounge_light_22
+    - input_number.lounge_brightness
+
+lounge_main_lights:
+  name: "Lounge Lights"
+  entities:
+    - light.lounge_light_11
+    - light.lounge_light_12
+    - light.lounge_light_21
+    - light.lounge_light_22
+
+stairs:
+  name: "Stairs"
+  entities:
+    - light.stairslight
+
+upstairs:
+  name: "Upstairs"
+  entities:
+    - light.upstairs_lights
+
+lounge_media:
+  name: "Lounge entertainment"
+  entities:
+#     - media_player.bravia_4k_2015
+     - media_player.sony_bravia_tv
+     - media_player.yamaha_receiver
+
+sensor_status:
+  name: "Z-Wave sensor status"
+  entities:
+    - zwave.aeotec_zw090_zstick_gen5_au
+    - zwave.aeotec_zw117_range_extender_6
+    - zwave.aeotec_zw100_multisensor_6
+    - zwave.wenzhou_tkb_control_system_tsp01_3_in_1_pir_motion_sensor
+    - zwave.neo_coolcam_unknown_type0003_id6082
+    - zwave.aeotec_zw100_multisensor_6_2
+
+weather:
+  name: "Weather"
+  entities:
+    - sensor.dark_sky_apparent_temperature
+    - sensor.dark_sky_cloud_coverage
+    - sensor.dark_sky_cloud_coverage_0
+    - sensor.dark_sky_daily_summary
+    - sensor.dark_sky_daytime_high_temperature_0
+    - sensor.dark_sky_humidity
+    - sensor.dark_sky_humidity_0
+    - sensor.dark_sky_icon
+    - sensor.dark_sky_icon_0
+    - sensor.dark_sky_overnight_low_temperature_0
+    - sensor.dark_sky_summary
+    - sensor.dark_sky_summary_0
+    - sensor.dark_sky_temperature
+    - sensor.dark_sky_temperature_0
+
+system_stats:
+  name: "System statistics"
+  entities:
+    - sensor.disk_free_home
+    - binary_sensor.ping_binary_sensor
+
+lighting_scenes:
+  name: "Lighting scenes"
+  control: hidden
+  entities:
+    - script.retro_mode
+    - script.movie_mode
+    - script.normal_mode
+
+mikes_room:
+  name: "Mike & Carmen's room"
+  entities:
+    - light.mike_s_bedside_lamp
+    - light.carmen_s_bedside_lamp
+    - light.mike_and_carmen_s_room
+
+stefs_room:
+  name: "Stef's room"
+  entities:
+  - light.stef_s_room_front_light
+  - light.stef_s_room_rear_light
+  - input_number.stef_room_brightness
+
+all_lights_non_rooms:
+  name: "All lights that aren't bedrooms for google home goodnight command"
+  entities:
+    - light.stairslight_light
+    - light.loungelamp_light
+    - light.lounge_lights
+    - light.upstairs_lights
+    - light.kitchen_lights
+    - light.kitchen_island
+    - light.kitchen_sink_ledstrip_esp8266_mqtt
+
+graphs:
+  name: "Graphs"
+  entities:
+    - history_graph.temperature_graph
+    - history_graph.lux_graph
+
+
+#automations:
+#  name: "Automations"
+#  view: yes
+#  entities:
+#    - group.all_automations
+
+#devicetracker:
+#  view: yes
+#  name: "Who is home?"
+#  entities:
+#    - device_tracker.ac37434e62c1
+#    - device_tracker.ac37434f00b8
+#    - device_tracker.twisterosiphone
+
+mikestefcarmen:
+  name: "Mike, Carmen & Stef phones for presence tracking"
+  entities:
+    - device_tracker.stef_s_pixel
+    - device_tracker.mike_s_google_pixel
+    - device_tracker.carmen_s_pixel
+    - device_tracker.juansapplewatch
+    - device_tracker.diannesplewatch
+
+upstairs_sensor:
+  name: "Upstairs Sensor"
+  entities:
+    - binary_sensor.aeotec_zw100_multisensor_6_sensor_2
+    - sensor.aeotec_zw100_multisensor_6_temperature_2
+    - sensor.aeotec_zw100_multisensor_6_luminance_2
+    - sensor.aeotec_zw100_multisensor_6_relative_humidity_2
+
+
+upstairs_sensor_view:
+  name: "Upstairs Sensor"
+  entities:
+    - group.upstairs_sensor
+
+#outside_weather:
+#  name: "Outside weather"
+#  entities:
+#    - sensor.owm_temperature
+#    - sensor.owm_condition
+
+phiole:
+  name: "Pihole"
+  entities:
+    - sensor.pihole_ads_blocked_today
+    - sensor.pihole_ads_percentage_blocked_today
+    - sensor.pihole_dns_queries_today
+
+motion_sensors:
+  name: "Motion sensors"
+  entities:
+    - binary_sensor.aeotec_zw100_multisensor_6_sensor
+    - binary_sensor.aeotec_zw100_multisensor_6_sensor_2
+    - binary_sensor.neo_coolcam_unknown_type0003_id6082_sensor
+    - binary_sensor.wenzhou_tkb_control_system_tsp01_3_in_1_pir_motion_sensor_motion_sensor
+
+zigbee_group:
+  control: hidden
+  name: Zigbee2mqtt
+  entities:
+    - input_boolean.zigbee_permit_join
+    - timer.zigbee_permit_join
+    - sensor.zigbee2mqtt_bridge_state
+    - switch.zigbee2mqtt_main_join
+    - automation.enable_zigbee_joining
+    - automation.disable_zigbee_joining
+    - automation.disable_zigbee_joining_by_timer
+    - input_select.zigbee2mqtt_log_level
+    - automation.zigbee2mqtt_log_level

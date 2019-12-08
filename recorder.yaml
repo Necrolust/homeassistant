@@ -1,0 +1,13 @@
+purge_keep_days: 14
+db_url: mysql://necrolust:dkc9655u6962@10.0.10.15/homeassistant?charset=utf8
+purge_interval: 1
+include:
+  domains:
+    - light
+    - automation
+    - history_graph
+    - binary_sensor
+    - sensor
+    - input_number
+    - switch
+    - media_player

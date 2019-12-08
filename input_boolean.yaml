@@ -1,0 +1,26 @@
+stairs_motion:
+  name: Are stairs on by motion
+  initial: off
+lounge_motion:
+  name: Is lounge on by motion
+  initial: off
+kitchen_motion:
+  name: Is kitchen on by motion
+  initial: off
+upstairs_motion:
+  name: Is upstairs on by motion
+  initial: off
+downstairs_bathroom_motion:
+  name: Is downstairs bathroom on by motion
+  initial: off
+fake_heater:
+  name: Fake Heater
+  icon: mdi:toggle-switch-off
+  initial: off
+next_rubbish_type:
+  name: Next rubbish type
+  icon: mdi:swim
+zigbee_permit_join:
+  name: Allow devices to join
+  initial: off
+  icon: mdi:cellphone-wireless

@@ -1,0 +1,10 @@
+  - platform: braviatv
+    host: 10.0.10.9
+    scan_interval: 10
+  - platform: denon
+    host: 10.0.10.8
+  - platform: kodi
+    host: 10.0.10.5
+    name: "Kodi on SHIELD"
+    username: !secret kodi_http_username
+    password: !secret kodi_http_password

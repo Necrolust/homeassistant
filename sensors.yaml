@@ -1,0 +1,119 @@
+# Sensor stuff
+  - platform: systemmonitor
+    resources:
+    - type: disk_free
+      arg: /home
+  - platform: command_line
+    command: 'cat /home/necro/scripts/finalParsedBinCollection2.json'
+    value_template: '{{value_json.Date1}}'
+    name: BinCollectionDate1
+  - platform: command_line
+    command: 'cat /home/necro/scripts/finalParsedBinCollection2.json'
+    value_template: '{{value_json.Date2}}'
+    name: BinCollectionDate2
+  - platform: command_line
+    command: 'cat /home/necro/scripts/finalParsedBinCollection2.json'
+    value_template: '{{value_json.Date1_type1}}'
+    name: BinCollectionDate1_Type1
+  - platform: command_line
+    command: 'cat /home/necro/scripts/finalParsedBinCollection2.json'
+    value_template: '{{value_json.Date1_type2}}'
+    name: BinCollectionDate1_Type2
+  - platform: command_line
+    command: 'cat /home/necro/scripts/finalParsedBinCollection2.json'
+    value_template: '{{value_json.Date2_type1}}'
+    name: BinCollectionDate2_Type1
+  - platform: command_line
+    command: 'cat /home/necro/scripts/finalParsedBinCollection2.json'
+    value_template: '{{value_json.Date2_type2}}'
+    name: BinCollectionDate2_Type2
+  - platform: sonarr_upcoming_media
+    api_key: 1d2b242902a041c294195e4334a007ac
+    host: 10.0.10.15
+    port: 8989
+    days: 7
+    ssl: false
+    urlbase: /sonarr
+  - platform: mqtt
+    state_topic: "zigbee2mqtt/bridge/state"
+    icon: mdi:router-wireless
+  - platform: min_max
+    entity_ids:
+      - sensor.aeon_labs_zw100_multisensor_6_temperature_2
+      - sensor.aeon_labs_zw100_multisensor_6_temperature
+#      - sensor.0x00158d0002c9cd30_temperature
+      - sensor.loungetempsensor_temperature
+    type: mean
+    name: "Average House Temperature"
+  - platform: min_max
+    entity_ids:
+      - sensor.loungetempsensor_temperature
+    type: mean
+    name: "Average Downstairs Temperature"
+  - platform: min_max
+    entity_ids:
+      - sensor.aeon_labs_zw100_multisensor_6_temperature_2
+      - sensor.aeon_labs_zw100_multisensor_6_temperature
+    type: mean
+    name: "Average Upstairs Temperature"
+  - platform: template
+    sensors:
+      next_rubbish_collection_date:
+        friendly_name: "Next rubbish collection date"
+        value_template: >
+          {% set next_date1 = (as_timestamp(strptime(states.sensor.bincollectiondate1.state, "%A %d %B %Y")))  %}
+          {% set next_date2 = (as_timestamp(strptime(states.sensor.bincollectiondate2.state, "%A %d %B %Y")))  %}
+          {% set todays_date = (as_timestamp(strptime(states.sensor.date.state, "%Y-%m-%d"))) %}
+          {% if todays_date <= next_date1 %}
+            {{ next_date1 | timestamp_custom('%A %d %B %Y') }}
+          {% else %}
+            {{ next_date2 | timestamp_custom('%A %d %B %Y') }}
+          {% endif %}
+  - platform: template
+    sensors:
+      next_rubbish_collection_type:
+        friendly_name: "Next rubbish collection type"
+        value_template: >
+          {% set next_date1 = (as_timestamp(strptime(states.sensor.bincollectiondate1.state, "%A %d %B %Y")))  %}
+          {% set next_date2 = (as_timestamp(strptime(states.sensor.bincollectiondate2.state, "%A %d %B %Y")))  %}
+          {% set todays_date = (as_timestamp(strptime(states.sensor.date.state, "%Y-%m-%d"))) %}
+          {% set date1_type1 = states.sensor.bincollectiondate1_type1.state %}
+          {% set date1_type2 = states.sensor.bincollectiondate1_type2.state %}
+          {% set date2_type1 = states.sensor.bincollectiondate2_type1.state %}
+          {% set date2_type2 = states.sensor.bincollectiondate2_type2.state %}
+
+          {% if todays_date <= next_date1 and is_state("sensor.bincollectiondate1_type2","") %}
+            {{ date1_type1 }}
+          {% elif todays_date <= next_date1 and is_state("sensor.bincollectiondate1_type2","Recycle") %}
+            {{ date1_type1 }} and {{ date1_type2 }}
+          {% elif todays_date > next_date1 and is_state("sensor.bincollectiondate2_type2","") %}
+            {{ date2_type1 }}
+          {% elif todays_date > next_date1 and is_state("sensor.bincollectiondate2_type2","Recycle") %}
+             {{ date2_type1 }} and {{ date2_type2 }}
+          {% endif %}
+  - platform: time_date
+    display_options:
+      - 'time'
+      - 'date'
+  - platform: template
+    sensors:
+      tablet_dashboard_battery:
+        friendly_name: "Hallway tablet dashboard battery"
+        value_template: >
+         {{ state_attr("binary_sensor.tablet_dashboard_motion", "battery_level") }}
+  - platform: template
+    sensors:
+      tablet_dashboard_charging:
+        friendly_name: "Hallway tablet dashboard charging status"
+        value_template: >
+         {{ state_attr("binary_sensor.tablet_dashboard_motion", "charging") }}
+  - platform: fail2ban
+    jails:
+      - ssh
+      - sshd
+      - hass-iptables
+      - nginx-badbots
+      - nginx-http-auth
+      - nginx-nohome
+      - nginx-noproxy
+      - nginx-noscript

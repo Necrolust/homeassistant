@@ -1,0 +1,11 @@
+  gr1:
+    name: Temperature Graph
+    entities:
+      - sensor.aeon_labs_zw100_multisensor_6_temperature
+      - sensor.aeon_labs_zw100_multisensor_6_temperature_2
+    hours_to_show: 168
+  gr2:
+    name: Humidity
+    entities:
+      - sensor.aeon_labs_zw100_multisensor_6_relative_humidity
+      - sensor.aeon_labs_zw100_multisensor_6_relative_humidity_2

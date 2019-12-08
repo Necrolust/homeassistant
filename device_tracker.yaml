@@ -1,0 +1,7 @@
+#- platform: unifi
+#  host: 10.0.10.2
+#  username: !secret unifi_username
+#  password: !secret unifi_password
+#  verify_ssl: False
+#  ssid_filter:
+#    - 'Necro-Unifi'

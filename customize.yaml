@@ -1,0 +1,85 @@
+media_player.rxa730_9ff2cb_zone_2:
+  hidden: true
+light.group_for_wakeup:
+  hidden: true
+media_player.rxa730_9ff2cb:
+  friendly_name: Yamaha RX-A730
+script.retro_mode:
+  icon: mdi:palette
+script.normal_mode:
+  icon: mdi:palette
+script.movie_mode:
+  icon: mdi:palette
+light.lounge_light:
+  friendly_name: Lounge Lamp
+binary_sensor.ping_binary_sensor:
+  friendly_name: Ubiquiti Security Gateway
+binary_sensor.shenzhen_neo_electronics_co_ltd_unknown_type_0003_id_6082_sensor:
+  friendly_name: Front door
+  sensor_class: opening
+  device_class: door
+binary_sensor.aeon_labs_zw100_multisensor_6_sensor:
+  device_class: motion
+binary_sensor.aeon_labs_zw100_multisensor_6_sensor_2:
+  device_class: motion
+zwave.neo_coolcam_unknown_type0003_id6082:
+  friendly_name: Front door sensor
+sensor.owm_temperature:
+  friendly_name: Outside temperature
+light.upstairs_lights:
+  assumed_state: true
+light.stef_s_room_front_light:
+  assumed_state: true
+light.stef_s_room_rear_light:
+  assumed_state: true
+light.mike_s_bedside_lamp:
+  assumed_state: true
+light.carmen_s_bedside_lamp:
+  assumed_state: true
+light.mike_and_carmen_s_room:
+  assumed_state: true
+light.kitchen_lights:
+  assumed_state: true
+group.all_automations:
+  hidden: false
+binary_sensor.laundrydoorsensor:
+  friendly_name: Laundry Door
+light.stairslight_light:
+  friendly_name: Stairs Light
+  assumed_state: true
+light.loungelamp_light:
+  friendly_name: Lounge Lamp
+  assumed_state: true
+light.downstairsbathroom_light:
+  friendly_name: Downstairs Bathroom
+  assumed_state: true
+light.upstairsbathroomlight_light:
+  assumed_state: true
+sensor.mqtt_sensor:
+  friendly_name: Zigbee2MQTT Hub
+sensor.average_house_temperature:
+  friendly_name: Average House Temperature
+  icon: mdi:oil-temperature
+input_boolean.fake_heater:
+  hidden: true
+device_tracker.ac3743a1528c:
+  friendly_name: Carmen
+light.kitchen_sink_ledstrip_esp8266_mqtt:
+  friendly_name: Kitchen Sink LED Strip
+switch.siren:
+  icon: mdi:alarm-light
+sensor.average_downstairs_temperature:
+  icon: mdi:oil-temperature
+sensor.average_upstairs_temperature:
+  icon: mdi:oil-temperature
+binary_sensor.tablet_dashboard_motion:
+  device_class: motion
+  friendly_name: Tablet dashboard motion
+sensor.0x00158d0002cb472c_battery:
+  friendly_name: KitchenSensor_battery
+sensor.nut_ups_battery_runtime:
+  unit_of_measurement: s
+sensor.aeon_labs_zw100_multisensor_6_luminance:
+  device_class: illuminance
+sensor.aeon_labs_zw100_multisensor_6_luminance_2:
+  device_class: illuminance

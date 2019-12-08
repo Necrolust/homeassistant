@@ -1,0 +1,38 @@
+- name: Kitchen Halloween Scene 1
+  entities:
+    light.kitchen_lights:
+      state: on
+      brightness_pct: 100
+      transition: 5
+      rgb_color: (136, 30, 228)
+    light.kitchen_island:
+      state: on
+      brightness_pct: 100
+      transition: 5
+      rgb_color: (133, 226, 31)
+
+- name: Kitchen Halloween Scene 2
+  entities:
+    light.kitchen_lights:
+      state: on
+      brightness_pct: 100
+      transition: 5
+      rgb_color: (255,154, 0)
+    light.kitchen_island:
+      state: on
+      brightness_pct: 100
+      transition: 5
+      rgb_color: (133, 226, 31)
+
+- name: Kitchen Halloween Scene 3
+  entities:
+    light.kitchen_lights:
+      state: on
+      brightness_pct: 100
+      transition: 5
+      rgb_color: (133, 226, 31)
+    light.kitchen_island:
+      state: on
+      brightness_pct: 100
+      transition: 5
+      rgb_color: (247, 95, 28)

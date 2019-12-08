@@ -1,0 +1,25 @@
+  api_host: http://10.0.10.18:8123
+  access_token: !secret konnected_access_token
+  devices:
+    - id: 840d8e8d21ca
+      binary_sensors:
+        - zone: 1
+          type: motion
+          name: 'Lounge 2 Alarm'
+        - zone: 2
+          type: motion
+          name: 'Entry Alarm'
+        - zone: 3
+          type: motion
+          name: 'Upstairs Alarm'
+      switches:
+        - zone: out
+          name: Siren
+        - zone: 5
+          name: 'Warning'
+          momentary: 65
+          pause: 55
+          repeat: -1
+      host: 10.0.10.144
+      port: 17249
+      discovery: false

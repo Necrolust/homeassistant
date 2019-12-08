@@ -1,0 +1,18 @@
+  - platform: webhooks
+    api_key: !secret telegram_bot_token
+    url: https://hass.quake.nz
+    trusted_networks:
+      - 149.154.167.197/32 # I don't think these telegram IPs are needed here anymore
+      - 149.154.167.198/31
+      - 149.154.167.200/29
+      - 149.154.167.208/28
+      - 149.154.167.224/29
+      - 149.154.167.232/31
+      - 91.108.4.0/22
+      - 10.0.10.18 # the pertinent addition
+    parse_mode: markdown
+    allowed_chat_ids:
+      - 797397771
+      - 771922256
+      - -317194054
+      - 776591656

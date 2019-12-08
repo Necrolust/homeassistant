@@ -1,0 +1,41 @@
+host: 10.0.10.15
+database: home_assistant
+username: home_assistant
+password: home_assistant
+include:
+  entities:
+    - binary_sensor.neo_coolcam_unknown_type0003_id6082_sensor
+    - binary_sensor.aeotec_zw100_multisensor_6_sensor
+    - sensor.aeotec_zw100_multisensor_6_relative_humidity
+    - sensor.aeotec_zw100_multisensor_6_temperature
+    - binary_sensor.aeotec_zw100_multisensor_6_sensor_2
+    - sensor.aeotec_zw100_multisensor_6_temperature_2
+    - sensor.aeotec_zw100_multisensor_6_relative_humidity_2
+    - sensor.aeotec_zw100_multisensor_6_luminance_2
+    - sensor.aeotec_zw100_multisensor_6_luminance
+    - binary_sensor.0x00158d00029a9dd7_occupancy
+    - sensor.0x00158d00029a9dd7_illuminance
+    - binary_sensor.0x00158d000277639d
+    - sensor.dark_sky_temperature
+    - sensor.0x00158d0002ca0669_temperature
+    - sensor.0x00158d0002ca0669_humidity
+    - sensor.0x00158d0002ca0669_pressure
+    - sensor.0x00158d0002c9cd30_temperature
+    - sensor.0x00158d0002c9cd30_humidity
+    - sensor.0x00158d0002c9cd30_pressure
+    - sensor.tablet_dashboard_battery
+    - sensor.tablet_dashboard_charging
+    - sensor.tablet_dashboard_battery
+    - sensor.kitchensensor_illuminance
+    - binary_sensor.kitchensensor_occupancy
+    - sensor.kitchensensor_battery
+    - sensor.kitchensensor_illuminance
+    - sensor.0x00158d00029a9dd7_battery
+    - sensor.0x00158d0002c9cd30_battery
+    - sensor.garage_door_battery
+    - sensor.laundrydoorsensor_battery
+    - sensor.loungetempsensor_battery
+    - sensor.mikesdimmerswitch_battery
+    - sensor.ranchslider_battery
+    - sensor.stefsdimmerswitch_battery
+    - sensor.xiaomimijabutton_battery

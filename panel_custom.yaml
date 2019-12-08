@@ -1,0 +1,9 @@
+  - name: alarm
+    sidebar_title: Alarm
+    sidebar_icon: mdi:shield-home
+    config:
+      alarmid: alarm_control_panel.house
+  - name: zwavegraph2
+    sidebar_title: ZWave Map
+    sidebar_icon: mdi:access-point-network
+    url_path: zwave

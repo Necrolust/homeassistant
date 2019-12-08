@@ -1,0 +1,6 @@
+  - platform: generic_thermostat
+    name: House Temperature
+    heater: input_boolean.fake_heater
+    target_sensor: sensor.average_house_temperature
+    initial_hvac_mode: "off"
+    target_temp: 21

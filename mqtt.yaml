@@ -1,0 +1,13 @@
+# MQTT broker
+broker: localhost
+port: 1883
+username: openhabian
+password: !secret mqtt_password
+discovery: true
+discovery_prefix: homeassistant
+birth_message:
+  topic: 'hass/status'
+  payload: 'online'
+will_message:
+  topic: 'hass/status'
+  payload: 'offline'

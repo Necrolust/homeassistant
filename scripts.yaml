@@ -1,0 +1,991 @@
+pihole_disable_5min:
+  alias: "Pihole - Disable for 5 minutes"
+  sequence:
+    - service: pi_hole.disable
+      data:
+        duration: 00:05
+
+pihole_enable:
+  alias: "Pihole - Enable"
+  sequence:
+    - service: pi_hole.enable
+
+marantz_homegroup:
+  alias: "Marantz Home Group Script"
+  sequence:
+    - service: media_player.turn_on
+      data:
+        entity_id: media_player.marantz_sr5012
+    - delay: '00:00:10'
+    - service: media_player.select_source
+      data:
+        entity_id: media_player.marantz_sr5012
+        source: CD
+
+movie_mode:
+  alias: "Movie lighting mode"
+  sequence:
+    - service: light.turn_on
+      data:
+        entity_id: light.loungelamp_light
+        brightness: 100
+        color_temp: 366
+    - service: light.turn_on
+      data:
+        entity_id: group.lounge_main_lights
+        brightness: 100
+        effect: white_mode
+        color_temp: 366
+
+#mikes_lamp_nightmode
+mikes_lamp_nightmode:
+  alias: "Mikes lamp night mode"
+  sequence:
+    - service: light.turn_on
+      data:
+        entity_id: light.mike_s_bedside_lamp
+        brightness: 30
+        effect: night_mode
+
+carmens_lamp_nightmode:
+  alias: "carmens lamp night mode"
+  sequence:
+    - service: light.turn_on
+      data:
+        entity_id: light.carmen_s_bedside_lamp
+        brightness: 30
+        effect: night_mode
+
+speak_next_rubbish_type:
+    alias: 'Ask Google for next rubbish type'
+    sequence:
+    - service: tts.google_say
+      entity_id:
+        - media_player.kitchen_home
+      data_template:
+        message: >-
+          The next rubbish collection is {{ (states.sensor.next_rubbish_collection_date.state) }} and it is {{ (states.sensor.next_rubbish_collection_type.state) }}
+
+shrek:
+  alias: "Intruder alert"
+  sequence:
+    - service: media_player.play_media
+      entity_id: media_player.kitchen_home
+      data:
+        media_content_id: https://hass.quake.nz/local/what-are-you-doing-in-my-swamp.mp3
+        media_content_type: 'music'
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_sink_ledstrip_esp8266_mqtt
+        brightness_pct: 100
+        rgb_color: [0, 255, 0]
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_lights
+        brightness_pct: 100
+        rgb_color: [0, 255, 0]
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_island_lights
+        brightness_pct: 100
+        rgb_color: [0, 255, 0]
+    - service: light.turn_on
+      data:
+        entity_id: light.lounge_lights
+        brightness_pct: 100
+        rgb_color: [0, 255, 0]
+    - service: light.turn_on
+      data:
+        entity_id: light.loungelamp_light
+        brightness_pct: 100
+        rgb_color: [0, 255, 0]
+    - service: light.turn_on
+      data:
+        entity_id: light.stairslight_light
+        brightness_pct: 100
+        rgb_color: [0, 255, 0]
+    - service: light.turn_on
+      data:
+        entity_id: light.upstairs_lights
+        brightness_pct: 100
+        rgb_color: [0, 255, 0]
+    - service: light.turn_on
+      data:
+        entity_id: light.downstairsbathroom_light
+        brightness_pct: 100
+        rgb_color: [0, 255, 0]
+    - service: media_player.volume_set
+      data_template:
+        entity_id: media_player.kitchen_home
+        volume_level: 0.6
+    - delay: '00:00:05'
+    - service: media_player.play_media
+      entity_id: media_player.kitchen_home
+      data:
+        media_content_id: https://hass.quake.nz/local/all-star.mp3
+        media_content_type: 'music'
+
+shrek_best:
+  alias: "Intruder alert_best"
+  sequence:
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_sink_ledstrip_esp8266_mqtt
+        brightness_pct: 100
+        rgb_color: [0, 255, 0]
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_island_lights
+        brightness_pct: 100
+        rgb_color: [0, 255, 0]
+    - service: light.turn_on
+      data:
+        entity_id: light.loungelamp_light
+        brightness_pct: 100
+        rgb_color: [0, 255, 0]
+    - service: light.turn_on
+      data:
+        entity_id: light.stairslight_light
+        brightness_pct: 100
+        rgb_color: [0, 255, 0]
+    - service: light.turn_on
+      data:
+        entity_id: light.downstairsbathroom_light
+        brightness_pct: 100
+        rgb_color: [0, 255, 0]
+
+stream_frontcam_to_shield:
+  alias: "Stream Exterior - Front camera to Nvidia SHIELD"
+  sequence:
+    - service: camera.play_stream
+      data:
+        entity_id: camera.exterior_front
+        media_player: media_player.shield
+
+###########################
+#  30 second delay ######
+###########################
+
+loop_light_30sec:
+  alias: "Whole house light loop - 30 second delay"
+  sequence:
+#initial light set
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_lights
+        transition: 4
+        rgb_color: [255, 0, 0]
+        brightness_pct: 100
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_island
+        transition: 4
+        rgb_color: [255, 0, 242]
+        brightness_pct: 100
+    - delay:
+        seconds: 2
+    - service: light.turn_on
+      data:
+        entity_id: light.lounge_2
+        transition: 4
+        rgb_color: [0, 255, 0]
+        brightness_pct: 100
+    - delay:
+        seconds: 2
+    - service: light.turn_on
+      data:
+        entity_id: light.mid
+        transition: 4
+        rgb_color: [0, 0, 255]
+        brightness_pct: 100
+    - delay:
+        seconds: 2
+    - service: light.turn_on
+      data:
+        entity_id: light.lounge_lights
+        rgb_color: [0, 247, 255]
+        brightness_pct: 100
+        transition: 0
+    - service: light.turn_on
+      data:
+        entity_id: light.loungelamp_light
+        rgb_color: [255, 0, 0]
+        brightness_pct: 100
+        transition: 4
+    - delay:
+        seconds: 2
+    - service: light.turn_on
+      data:
+        entity_id: light.upstairs_lights
+        rgb_color: [255, 8, 0]
+        brightness_pct: 100
+        transition: 0
+    - service: light.turn_on
+      data:
+        entity_id: light.stairslight_light
+        rgb_color: [225, 0, 255]
+        brightness_pct: 100
+        transition: 4
+    - delay:
+        seconds: 30
+#scene 1
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_lights
+        transition: 4
+        rgb_color: [136, 30, 228]
+        brightness_pct: 100
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_island
+        transition: 4
+        rgb_color: [0, 255, 0]
+        brightness_pct: 100
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.lounge_2
+        transition: 4
+        rgb_color: [255,154, 0]
+        brightness_pct: 100
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.mid
+        transition: 4
+        rgb_color: [255, 30, 0]
+        brightness_pct: 100
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.lounge_lights
+        rgb_color: [136, 30, 228]
+        brightness_pct: 100
+        transition: 0
+    - service: light.turn_on
+      data:
+        entity_id: light.loungelamp_light
+        rgb_color: [0, 255, 0]
+        brightness_pct: 100
+        transition: 4
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.upstairs_lights
+        rgb_color: [225, 0, 255]
+        brightness_pct: 100
+        transition: 4
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.stairslight_light
+        rgb_color: [255, 162, 0]
+        brightness_pct: 100
+        transition: 4
+    - delay:
+        seconds: 30
+#scene 2
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_lights
+        transition: 4
+        rgb_color: [255,154, 0]
+        brightness_pct: 100
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_island
+        transition: 4
+        rgb_color: [0, 255, 0]
+        brightness_pct: 100
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.lounge_2
+        transition: 4
+        rgb_color: [136, 30, 228]
+        brightness_pct: 100
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.mid
+        transition: 4
+        rgb_color: [133, 226, 31]
+        brightness_pct: 100
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.lounge_lights
+        transition: 0
+        rgb_color: [247, 95, 28]
+        brightness_pct: 100
+    - service: light.turn_on
+      data:
+        entity_id: light.loungelamp_light
+        rgb_color: [136, 30, 228]
+        brightness_pct: 100
+        transition: 4
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.upstairs_lights
+        rgb_color: [0, 0, 255]
+        brightness_pct: 100
+        transition: 4
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.stairslight_light
+        rgb_color: [0, 255, 0]
+        brightness_pct: 100
+        transition: 4
+    - delay:
+        seconds: 30
+#scene 3
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_lights
+        transition: 4
+        rgb_color: [133, 226, 31]
+        brightness_pct: 100
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_island
+        transition: 4
+        rgb_color: [247, 95, 28]
+        brightness_pct: 100
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.lounge_2
+        transition: 4
+        rgb_color: [0, 255, 0]
+        brightness_pct: 100
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.mid
+        transition: 4
+        rgb_color: [247, 95, 28]
+        brightness_pct: 100
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.lounge_lights
+        rgb_color: [255,154, 0]
+        transition: 0
+        brightness_pct: 100
+    - service: light.turn_on
+      data:
+        entity_id: light.loungelamp_light
+        rgb_color: [0, 0, 255]
+        brightness_pct: 100
+        transition: 4
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.upstairs_lights
+        rgb_color: [255, 0, 0]
+        brightness_pct: 100
+        transition: 4
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.stairslight_light
+        rgb_color: [0, 0, 255]
+        brightness_pct: 100
+        transition: 4
+    - delay:
+        seconds: 30
+#scene 4
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_lights
+        transition: 4
+        rgb_color: [255, 8, 0]
+        brightness_pct: 100
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_island
+        transition: 4
+        rgb_color: [255, 0, 230]
+        brightness_pct: 100
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.lounge_2
+        transition: 4
+        rgb_color: [0, 255, 225]
+        brightness_pct: 100
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.mid
+        transition: 4
+        rgb_color: [255, 0, 238]
+        brightness_pct: 100
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.lounge_lights
+        rgb_color: [8, 0, 255]
+        transition: 0
+        brightness_pct: 100
+    - service: light.turn_on
+      data:
+        entity_id: light.loungelamp_light
+        rgb_color: [255, 55, 0]
+        brightness_pct: 100
+        transition: 4
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.upstairs_lights
+        rgb_color: [255, 0, 221]
+        brightness_pct: 100
+        transition: 4
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.stairslight_light
+        rgb_color: [255, 0, 0]
+        brightness_pct: 100
+        transition: 4
+    - delay:
+        seconds: 30
+    - wait_template: "{{ is_state('script.loop_light_test_looper', 'off') }}"
+    - service: script.turn_on
+      data:
+        entity_id: script.loop_light_30sec_looper
+
+loop_light_30sec_looper:
+  alias: "Whole house light loop - 30 second delay looper"
+  sequence:
+    - service: script.turn_on
+      data:
+        entity_id: script.loop_light_30sec
+
+light_loop_stop_30sec:
+  alias: "Whole house light loop - 30 second delay STOP"
+  sequence:
+    - service: script.turn_off
+      data:
+        entity_id: script.loop_light_30sec
+    - service: script.turn_off
+      data:
+        entity_id: script.loop_light_30sec_looper
+
+##############
+# 5 minute delay#
+#################
+
+loop_light_5min:
+  alias: "Whole house light loop - 5 minute delay"
+  sequence:
+#scene 1
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_lights
+        transition: 4
+        rgb_color: [136, 30, 228]
+        brightness_pct: 100
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_island
+        transition: 4
+        rgb_color: [0, 255, 0]
+        brightness_pct: 100
+    - delay:
+        minutes: 5
+    - service: light.turn_on
+      data:
+        entity_id: light.lounge_2
+        transition: 4
+        rgb_color: [255,154, 0]
+        brightness_pct: 100
+    - delay:
+        minutes: 5
+    - service: light.turn_on
+      data:
+        entity_id: light.mid
+        transition: 4
+        rgb_color: [255, 30, 0]
+        brightness_pct: 100
+    - delay:
+        minutes: 5
+    - service: light.turn_on
+      data:
+        entity_id: light.lounge_lights
+        rgb_color: [136, 30, 228]
+        brightness_pct: 100
+        transition: 0
+    - service: light.turn_on
+      data:
+        entity_id: light.loungelamp_light
+        rgb_color: [0, 255, 0]
+        brightness_pct: 100
+        transition: 0
+    - delay:
+        minutes: 5
+#scene 2
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_lights
+        transition: 4
+        rgb_color: [255,154, 0]
+        brightness_pct: 100
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_island
+        transition: 4
+        rgb_color: [0, 255, 0]
+        brightness_pct: 100
+    - delay:
+        minutes: 5
+    - service: light.turn_on
+      data:
+        entity_id: light.lounge_2
+        transition: 4
+        rgb_color: [136, 30, 228]
+        brightness_pct: 100
+    - delay:
+        minutes: 5
+    - service: light.turn_on
+      data:
+        entity_id: light.mid
+        transition: 4
+        rgb_color: [133, 226, 31]
+        brightness_pct: 100
+    - delay:
+        minutes: 5
+    - service: light.turn_on
+      data:
+        entity_id: light.lounge_lights
+        transition: 0
+        rgb_color: [247, 95, 28]
+        brightness_pct: 100
+    - service: light.turn_on
+      data:
+        entity_id: light.loungelamp_light
+        rgb_color: [136, 30, 228]
+        brightness_pct: 100
+        transition: 4
+    - delay:
+        minutes: 5
+#scene 3
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_lights
+        transition: 4
+        rgb_color: [133, 226, 31]
+        brightness_pct: 100
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_island
+        transition: 4
+        rgb_color: [247, 95, 28]
+        brightness_pct: 100
+    - delay:
+        minutes: 5
+    - service: light.turn_on
+      data:
+        entity_id: light.lounge_2
+        transition: 4
+        rgb_color: [0, 255, 0]
+        brightness_pct: 100
+    - delay:
+        minutes: 5
+    - service: light.turn_on
+      data:
+        entity_id: light.mid
+        transition: 4
+        rgb_color: [247, 95, 28]
+        brightness_pct: 100
+    - delay:
+        minutes: 5
+    - service: light.turn_on
+      data:
+        entity_id: light.lounge_lights
+        rgb_color: [255,154, 0]
+        transition: 0
+        brightness_pct: 100
+    - service: light.turn_on
+      data:
+        entity_id: light.loungelamp_light
+        rgb_color: [136, 30, 228]
+        brightness_pct: 100
+        transition: 4
+    - delay:
+        minutes: 5
+    - wait_template: "{{ is_state('script.loop_light_test_looper', 'off') }}"
+    - service: script.turn_on
+      data:
+        entity_id: script.loop_light_5min_looper
+
+loop_light_5min_looper:
+  alias: "Whole house light loop - 5 min delay looper"
+  sequence:
+    - service: script.turn_on
+      data:
+        entity_id: script.loop_light_5min
+
+light_loop_stop_5min:
+  alias: "Whole house light loop - 5 min delay STOP"
+  sequence:
+    - service: script.turn_off
+      data:
+        entity_id: script.loop_light_5min
+    - service: script.turn_off
+      data:
+        entity_id: script.loop_light_5min_looper
+
+###########################
+#  30 second delay alternate ######
+###########################
+
+loop_light_30sec_alternate:
+  alias: "Whole house light loop - 30 second delay alternate"
+  sequence:
+#initial light set
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_lights
+        transition: 4
+        rgb_color: [0, 200, 255]
+        brightness_pct: 100
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_island
+        transition: 4
+        rgb_color: [255, 0, 242]
+        brightness_pct: 100
+    - delay:
+        seconds: 2
+    - service: light.turn_on
+      data:
+        entity_id: light.lounge_2
+        transition: 4
+        rgb_color: [25, 0, 255]
+        brightness_pct: 100
+    - delay:
+        seconds: 2
+    - service: light.turn_on
+      data:
+        entity_id: light.mid
+        transition: 4
+        rgb_color: [255, 0, 0]
+        brightness_pct: 100
+    - delay:
+        seconds: 2
+    - service: light.turn_on
+      data:
+        entity_id: light.lounge_lights
+        rgb_color: [25, 0, 255]
+        brightness_pct: 100
+        transition: 0
+    - service: light.turn_on
+      data:
+        entity_id: light.loungelamp_light
+        rgb_color: [255, 0, 0]
+        brightness_pct: 100
+        transition: 4
+    - delay:
+        seconds: 2
+    - service: light.turn_on
+      data:
+        entity_id: light.upstairs_lights
+        rgb_color: [0, 255, 51]
+        brightness_pct: 100
+        transition: 0
+    - service: light.turn_on
+      data:
+        entity_id: light.stairslight_light
+        rgb_color: [0, 255, 51]
+        brightness_pct: 100
+        transition: 4
+    - delay:
+        seconds: 30
+#scene 1
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_lights
+        transition: 4
+        rgb_color: [0, 255, 51]
+        brightness_pct: 100
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_island
+        transition: 4
+        rgb_color: [0, 0, 255]
+        brightness_pct: 100
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.lounge_2
+        transition: 4
+        rgb_color: [0, 200, 255]
+        brightness_pct: 100
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.mid
+        transition: 4
+        rgb_color: [25, 0, 255]
+        brightness_pct: 100
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.lounge_lights
+        rgb_color: [255, 0, 0]
+        brightness_pct: 100
+        transition: 0
+    - service: light.turn_on
+      data:
+        entity_id: light.loungelamp_light
+        rgb_color: [0, 0, 255]
+        brightness_pct: 100
+        transition: 4
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.upstairs_lights
+        rgb_color: [25, 0, 255]
+        brightness_pct: 100
+        transition: 4
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.stairslight_light
+        rgb_color: [255, 0, 0]
+        brightness_pct: 100
+        transition: 4
+    - delay:
+        seconds: 30
+#scene 2
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_lights
+        transition: 4
+        rgb_color: [25, 0, 255]
+        brightness_pct: 100
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_island
+        transition: 4
+        rgb_color: [255, 0, 0]
+        brightness_pct: 100
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.lounge_2
+        transition: 4
+        rgb_color: [0, 255, 51]
+        brightness_pct: 100
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.mid
+        transition: 4
+        rgb_color: [0, 200, 255]
+        brightness_pct: 100
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.lounge_lights
+        transition: 0
+        rgb_color: [25, 0, 255]
+        brightness_pct: 100
+    - service: light.turn_on
+      data:
+        entity_id: light.loungelamp_light
+        rgb_color: [0, 0, 255]
+        brightness_pct: 100
+        transition: 4
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.upstairs_lights
+        rgb_color: [25, 0, 255]
+        brightness_pct: 100
+        transition: 4
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.stairslight_light
+        rgb_color: [0, 0, 255]
+        brightness_pct: 100
+        transition: 4
+    - delay:
+        seconds: 30
+#scene 3
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_lights
+        transition: 4
+        rgb_color: [25, 0, 255]
+        brightness_pct: 100
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_island
+        transition: 4
+        rgb_color: [0, 0, 255]
+        brightness_pct: 100
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.lounge_2
+        transition: 4
+        rgb_color: [25, 0, 255]
+        brightness_pct: 100
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.mid
+        transition: 4
+        rgb_color: [0, 255, 51]
+        brightness_pct: 100
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.lounge_lights
+        rgb_color: [0, 200, 255]
+        transition: 0
+        brightness_pct: 100
+    - service: light.turn_on
+      data:
+        entity_id: light.loungelamp_light
+        rgb_color: [255, 0, 0]
+        brightness_pct: 100
+        transition: 4
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.upstairs_lights
+        rgb_color: [25, 0, 255]
+        brightness_pct: 100
+        transition: 4
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.stairslight_light
+        rgb_color: [0, 0, 255]
+        brightness_pct: 100
+        transition: 4
+    - delay:
+        seconds: 30
+#scene 4
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_lights
+        transition: 4
+        rgb_color: [25, 0, 255]
+        brightness_pct: 100
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_island
+        transition: 4
+        rgb_color: [0, 0, 255]
+        brightness_pct: 100
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.lounge_2
+        transition: 4
+        rgb_color: [25, 0, 255]
+        brightness_pct: 100
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.mid
+        transition: 4
+        rgb_color: [25, 0, 255]
+        brightness_pct: 100
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.lounge_lights
+        rgb_color: [0, 255, 51]
+        transition: 0
+        brightness_pct: 100
+    - service: light.turn_on
+      data:
+        entity_id: light.loungelamp_light
+        rgb_color: [255, 0, 0]
+        brightness_pct: 100
+        transition: 4
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.upstairs_lights
+        rgb_color: [0, 200, 255]
+        brightness_pct: 100
+        transition: 4
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.stairslight_light
+        rgb_color: [255, 0, 0]
+        brightness_pct: 100
+        transition: 4
+    - delay:
+        seconds: 30
+    - wait_template: "{{ is_state('script.loop_light_30sec_alternate', 'off') }}"
+    - service: script.turn_on
+      data:
+        entity_id: script.loop_light_30sec_looper_alternate
+
+loop_light_30sec_looper_alternate:
+  alias: "Whole house light loop - 30 second delay looper alternate"
+  sequence:
+    - service: script.turn_on
+      data:
+        entity_id: script.loop_light_30sec_alternate
+
+light_loop_stop_30sec_alternate:
+  alias: "Whole house light loop - 30 second delay STOP alternate"
+  sequence:
+    - service: script.turn_off
+      data:
+        entity_id: script.loop_light_30sec_alternate
+    - service: script.turn_off
+      data:
+        entity_id: script.loop_light_30sec_looper_alternate

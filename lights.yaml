@@ -1,0 +1,271 @@
+# milights
+- name: "Upstairs lights"
+  command_topic: milight/0xCD86/rgb_cct/1
+  state_topic: milight/states/0xCD86/rgb_cct/1
+
+    # Use a YAML anchor for common settings so we can just reference
+    # them for other lights.
+  <<: &MILIGHT_PARAMS
+    platform: mqtt
+    schema: json
+    color_temp: true
+    rgb: true
+    brightness: true
+    effect: true
+    effect_list:
+      - white_mode
+      - night_mode
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+
+# Lounge light 1,1
+- name: "Lounge light 1,1"
+  command_topic: milight/0x111/rgb_cct/1
+  state_topic: milight/states/0x111/rgb_cct/1
+  <<: *MILIGHT_PARAMS
+
+# Lounge light 1,2
+- name: "Lounge light 1,2"
+  command_topic: milight/0x112/rgb_cct/1
+  state_topic: milight/states/0x112/rgb_cct/1
+  <<: *MILIGHT_PARAMS
+
+# Lounge light 2,1
+- name: "Lounge light 2,1"
+  command_topic: milight/0x121/rgb_cct/1
+  state_topic: milight/states/0x121/rgb_cct/1
+  <<: *MILIGHT_PARAMS
+
+# Lounge light 2,2
+- name: "Lounge light 2,2"
+  command_topic: milight/0x122/rgb_cct/1
+  state_topic: milight/states/0x122/rgb_cct/1
+  <<: *MILIGHT_PARAMS
+
+# Mike's bedside lamp
+- name: "Mike's bedside lamp"
+  command_topic: milight/0x1001/rgb_cct/1
+  state_topic: milight/states/0x1001/rgb_cct/1
+  <<: *MILIGHT_PARAMS
+
+# Carmen's bedside lamp
+- name: "Carmen's bedside lamp"
+  command_topic: milight/0x1002/rgb_cct/1
+  state_topic: milight/states/0x1002/rgb_cct/1
+  <<: *MILIGHT_PARAMS
+
+# Mike and Carmen's Room
+- name: "Mike and Carmen's room"
+  command_topic: milight/0x1003/rgb_cct/1
+  state_topic: milight/states/0x1003/rgb_cct/1
+  <<: *MILIGHT_PARAMS
+
+# Stef's Room front Light
+- name: "Stef's room front light"
+  command_topic: milight/0x1005/rgb_cct/1
+  state_topic: milight/states/0x1005/rgb_cct/1
+  <<: *MILIGHT_PARAMS
+
+# Stef's Room rear Light
+- name: "Stef's room rear light"
+  command_topic: milight/0x1004/rgb_cct/1
+  state_topic: milight/states/0x1004/rgb_cct/1
+  <<: *MILIGHT_PARAMS
+
+# Kitchen lights
+- name: "Kitchen lights"
+  command_topic: milight/0x5245/rgb_cct/1
+  state_topic: milight/states/0x5245/rgb_cct/1
+  <<: *MILIGHT_PARAMS
+
+# Blueroom lamp
+- name: "Blueroom lamp"
+  command_topic: milight/0x1006/rgb_cct/1
+  state_topic: milight/states/0x1006/rgb_cct/1
+  <<: *MILIGHT_PARAMS
+
+- platform: group
+  name: Lounge lights
+  entities:
+    - light.lounge_light_11
+    - light.lounge_light_12
+    - light.lounge_light_21
+    - light.lounge_light_22
+
+#- platform: group
+#  name: Kitchen island lights
+#  entities:
+#    - light.kitchen_island_1_light
+#    - light.kitchen_island_2_light
+#    - light.kitchen_island_3_light
+
+- platform: mqtt
+  schema: json
+  name: "Kitchen Island"
+  command_topic: "zigbee2mqtt/kitchen_island/set"
+  state_topic: "zigbee2mqtt/kitchen_island"
+  brightness: true
+  color_temp: true
+  xy: true
+
+- platform: group
+  name: Stef's room both lights
+  entities:
+    - light.stef_s_room_front_light
+    - light.stef_s_room_rear_light
+
+- platform: template
+  lights:
+    tablet_dashboard_screen:
+      turn_on:
+      turn_off:
+      set_level:
+
+#- platform: mqtt
+#  schema: json
+#  name: "Kitchen Sink"
+#  command_topic: "home/Kitchen-Sink-LEDStrip-ESP8266-MQTT_ha/state/in"
+#  state_topic: "home/Kitchen-Sink-LEDStrip-ESP8266-MQTT_ha/state/out"
+#  effect: true
+#  effect_list:
+#      - "Static"
+#      - "Blink"
+#      - "Breath"
+#      - "Color Wipe"
+#      - "Color Wipe Inverse"
+#      - "Color Wipe Reverse"
+#      - "Color Wipe Reverse Inverse"
+#      - "Color Wipe Random"
+#      - "Random Color"
+#      - "Single Dynamic"
+#      - "Multi Dynamic"
+#      - "Rainbow"
+#      - "Rainbow Cycle"
+#      - "Scan"
+#      - "Dual Scan"
+#      - "Fade"
+#      - "Theater Chase"
+#      - "Theater Chase Rainbow"
+#      - "Running Lights"
+#      - "Twinkle"
+#      - "Twinkle Random"
+#      - "Twinkle Fade"
+#      - "Twinkle Fade Random"
+#      - "Sparkle"
+#      - "Flash Sparkle"
+#      - "Hyper Sparkle"
+#      - "Strobe"
+#      - "Strobe Rainbow"
+#      - "Multi Strobe"
+#      - "Blink Rainbow"
+#      - "Chase White"
+#      - "Chase Color"
+#      - "Chase Random"
+#      - "Chase Rainbow"
+#      - "Chase Flash"
+#      - "Chase Flash Random"
+#      - "Chase Rainbow White"
+#      - "Chase Blackout"
+#      - "Chase Blackout Rainbow"
+#      - "Color Sweep Random"
+#      - "Running Color"
+#      - "Running Red Blue"
+#      - "Running Random"
+#      - "Larson Scanner"
+#      - "Comet"
+#      - "Fireworks"
+#      - "Fireworks Random"
+#      - "Merry Christmas"
+#      - "Fire Flicker"
+#      - "Fire Flicker (soft)"
+#      - "Fire Flicker (intense)"
+#      - "Circus Combustus"
+#      - "Halloween"
+#      - "Bicolor Chase"
+#      - "Tricolor Chase"
+#      - "ICU"
+#      - "E131"
+#  brightness: true
+#  color_temp: true
+#  rgb: true
+#  optimistic: false
+#  qos: 0
+#  retain: true
+
+- platform: mqtt
+  schema: json
+  name: "LongSTRIP"
+  command_topic: "home/Long-LED-ESP8266-MQTT_ha/state/in"
+  state_topic: "home/Long-LED-ESP8266-MQTT_ha/state/out"
+  effect: true
+  effect_list:
+      - "Static"
+      - "Blink"
+      - "Breath"
+      - "Color Wipe"
+      - "Color Wipe Inverse"
+      - "Color Wipe Reverse"
+      - "Color Wipe Reverse Inverse"
+      - "Color Wipe Random"
+      - "Random Color"
+      - "Single Dynamic"
+      - "Multi Dynamic"
+      - "Rainbow"
+      - "Rainbow Cycle"
+      - "Scan"
+      - "Dual Scan"
+      - "Fade"
+      - "Theater Chase"
+      - "Theater Chase Rainbow"
+      - "Running Lights"
+      - "Twinkle"
+      - "Twinkle Random"
+      - "Twinkle Fade"
+      - "Twinkle Fade Random"
+      - "Sparkle"
+      - "Flash Sparkle"
+      - "Hyper Sparkle"
+      - "Strobe"
+      - "Strobe Rainbow"
+      - "Multi Strobe"
+      - "Blink Rainbow"
+      - "Chase White"
+      - "Chase Color"
+      - "Chase Random"
+      - "Chase Rainbow"
+      - "Chase Flash"
+      - "Chase Flash Random"
+      - "Chase Rainbow White"
+      - "Chase Blackout"
+      - "Chase Blackout Rainbow"
+      - "Color Sweep Random"
+      - "Running Color"
+      - "Running Red Blue"
+      - "Running Random"
+      - "Larson Scanner"
+      - "Comet"
+      - "Fireworks"
+      - "Fireworks Random"
+      - "Merry Christmas"
+      - "Fire Flicker"
+      - "Fire Flicker (soft)"
+      - "Fire Flicker (intense)"
+      - "Circus Combustus"
+      - "Halloween"
+      - "Bicolor Chase"
+      - "Tricolor Chase"
+      - "ICU"
+      - "E131"
+  brightness: true
+  color_temp: true
+  rgb: true
+  optimistic: false
+  qos: 0
+  retain: true

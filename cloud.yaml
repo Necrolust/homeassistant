@@ -1,0 +1,36 @@
+# Cloud
+google_actions:
+  filter:
+    include_entities:
+      - media_player.sony_bravia_tv
+      - script.retro_mode
+      - script.normal_mode
+      - script.movie_mode
+      - group.all_lights_non_rooms
+      - script.mikes_lamp_nightmode
+      - script.carmens_lamp_nightmode
+      - climate.house_temperature
+      - input_boolean.next_rubbish_type
+    exclude_entities:
+      - light.stef_s_room_front_light
+      - light.stef_s_room_rear_light
+      - light.blueroom_lamp
+      - light.tablet_dashboard_screen
+      - light.stef_s_room_both_lights
+      - light.kitchen_island_1_light
+      - light.kitchen_island_2_light
+      - light.kitchen_island_3_light
+      - light.kitchensinkled
+      - light.kitchen_sink_ledstrip_esp8266_mqtt
+    include_domains:
+      - light
+    exclude_domains:
+      - group
+  entity_config:
+    media_player.sony_bravia_tv:
+      name: Lounge TV
+      room: lounge
+    group.all_lights_non_rooms:
+      name: all non bed lights
+    script.mikes_lamp_nightmode:
+      name: Mikes lamp night mode

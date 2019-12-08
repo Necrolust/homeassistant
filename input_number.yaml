@@ -1,0 +1,20 @@
+kitchensink_animation_speed:
+  name: Kitchen Sink Animation Speed
+#  initial: 200
+  min: 0
+  max: 255
+  step: 5
+
+stef_room_brightness:
+  name: Stefs room brightness
+#  initial: 200
+  min: 0
+  max: 255
+  step: 1
+
+lounge_brightness:
+  name: Lounge lights brightness
+#  initial: 200
+  min: 0
+  max: 255
+  step: 1

@@ -1,0 +1,12 @@
+  - name: Telegram notification - Mike
+    platform: telegram
+    chat_id: 797397771
+  - name: Telegram notification - Carmen
+    platform: telegram
+    chat_id: 771922256
+  - name: Telegram notification - Group
+    platform: telegram
+    chat_id: -317194054
+  - name: Lannouncer
+    platform: lannouncer
+    host: 10.0.10.10

@@ -1,0 +1,24 @@
+# This pings the router for connectivity every 30 seconds
+- platform: ping
+  host: 10.0.10.1
+  scan_interval: 30
+- platform: ping
+  name: MiLight ESP8266 gateway emulator
+  host: 10.0.10.4
+  scan_interval: 30
+- platform: template
+  sensors:
+    rubbish_and_recycling:
+      friendly_name: "Rubbish and recycling"
+      value_template: >
+        {{ is_state('sensor.next_rubbish_collection_type', "('Rubbish', 'Recycle')") }}
+- platform: template
+  sensors:
+    rubbish_only:
+      friendly_name: "Rubbish only"
+      value_template: >
+        {{ is_state('sensor.next_rubbish_collection_type', "('Rubbish')") }}
+
+- platform: mqtt
+  name: tablet_dashboard_motion
+  state_topic: any/value
